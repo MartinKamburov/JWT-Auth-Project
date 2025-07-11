@@ -10,8 +10,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -93,20 +91,21 @@ public class SecurityConfig {
     }
 
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-
-        //We are constructing a user object right here
-        //{noop} is a prefix that should be saved as plaintext don't worry abt rn
-        UserDetails user1 = User.withUsername("martin1")
-                .password("{noop}hello")
-                .roles("USER")
-                .build();
-
-
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//
+//        //We are constructing a user object right here
+//        //{noop} is a prefix that should be saved as plaintext don't worry abt rn
+//        UserDetails user1 = User.withUsername("martin1")
+//                .password("{noop}hello")
+//                .roles("USER")
+//                .build();
+//
+//
 //        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
 //        userDetailsManager.createUser(user1);
-        return new JdbcUserDetailsManager(dataSource);
-    }
+//
+//        return userDetailsManager;
+//    }
 
 }
