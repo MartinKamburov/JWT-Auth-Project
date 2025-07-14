@@ -1,4 +1,4 @@
-package com.backend.controller;
+package com.backend.user;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
