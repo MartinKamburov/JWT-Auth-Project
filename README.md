@@ -29,8 +29,8 @@ npm install && npm run dev     # UI on http://localhost:5173
 Default auth endpoints:
 
 ```
-POST /api/auth/register   # create account
-POST /api/auth/login      # returns JWT
+POST /api/v1/auth/register   # create account
+POST /api/v1/auth/login      # returns JWT
 ```
 
 Send the token in `Authorization: Bearer <jwt>` to call protected routes.

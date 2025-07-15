@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +18,6 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-
     private final String secretKey;
 
     // Spring will call this constructor and inject the value of JWT_SECRET_KEY (via relaxed binding)
@@ -73,7 +73,10 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        // Base64 is originally used in tutorial, but we can use Base64URL to test on JWT.io if the token is valid and the signature is verified
+//        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64URL.decode(secretKey);
+
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

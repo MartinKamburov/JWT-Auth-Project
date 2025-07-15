@@ -1,4 +1,3 @@
-// src/AuthPage.tsx
 import React, { useState } from "react";
 import {
   Container,
@@ -16,10 +15,12 @@ type Mode = "login" | "register";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<Mode>("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName]   = useState("");
+  const [email, setEmail]         = useState("");
+  const [password, setPassword]   = useState("");
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState<string | null>(null);
 
   const toggleMode = () => {
     setMode(mode === "login" ? "register" : "login");
@@ -32,11 +33,15 @@ export default function AuthPage() {
     setError(null);
 
     try {
-      const endpoint = mode === "login" ? "login" : "register";
-      const res = await fetch(`${API_BASE}/api/auth/${endpoint}`, {
+      const endpoint = mode === "login" ? "authenticate" : "register";
+      const payload = mode === "login"
+        ? { email, password }
+        : { firstName, lastName, email, password };
+
+      const res = await fetch(`${API_BASE}/api/v1/auth/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error(await res.text());
@@ -44,8 +49,9 @@ export default function AuthPage() {
       if (mode === "login") {
         const { token } = await res.json();
         localStorage.setItem("jwt", token);
-        window.location.href = "/";
+        window.location.href = "${API_BASE}/api/v1/auth/authenticate";
       } else {
+        // after successful register, switch to login
         setMode("login");
       }
     } catch (err: any) {
@@ -68,6 +74,32 @@ export default function AuthPage() {
               {error && <Alert variant="danger">{error}</Alert>}
 
               <Form onSubmit={handleSubmit} className="mb-3">
+                {mode === "register" && (
+                  <>
+                    <Form.Group className="mb-3" controlId="firstName">
+                      <Form.Label>First Name</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Your first name"
+                        required
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                      />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="lastName">
+                      <Form.Label>Last Name</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Your last name"
+                        required
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                      />
+                    </Form.Group>
+                  </>
+                )}
+
                 <Form.Group className="mb-3" controlId="email">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
@@ -103,7 +135,9 @@ export default function AuthPage() {
               </Form>
 
               <div className="text-center">
-                {mode === "login" ? "Don't have an account?" : "Already registered?"}{" "}
+                {mode === "login"
+                  ? "Don't have an account?"
+                  : "Already registered?"}{" "}
                 <Button variant="link" onClick={toggleMode} className="p-0 align-baseline">
                   {mode === "login" ? "Sign up" : "Log in"}
                 </Button>
