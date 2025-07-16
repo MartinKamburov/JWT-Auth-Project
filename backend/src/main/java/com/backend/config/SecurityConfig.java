@@ -10,6 +10,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -23,10 +25,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1) disable CSRF on stateless APIs
-                .csrf(csrf -> csrf.disable())
+                // 1) 1) enable CORS using your WebMvcConfigurer rules
+                .cors(withDefaults())
+                .csrf(csrf -> csrf.disable()) // then disable CSRF
 
-                // 2) configure URL authorization via a lambda
+                // 2) URL rules
                 .authorizeHttpRequests(auth -> auth
                         // public endpoints:
                         .requestMatchers("/api/v1/auth/**").permitAll()
@@ -36,7 +39,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // 3) no sessions: we're stateless
+                // 3) stateless sessions
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
