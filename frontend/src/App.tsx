@@ -1,13 +1,22 @@
-import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AuthPage from './AuthPage';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import TestPage from "./Test";
 
 function App() {
 
   return (
-    <>
-      <AuthPage />
-    </>
+    <BrowserRouter>
+      <Routes>
+        {/* Auth form at /login */}
+        <Route path="/login" element={<AuthPage />} />
+
+        {/* Protected React route at /test */}
+        <Route path="/test" element={<TestPage />} />
+
+        {/* Any other path → redirect to /login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

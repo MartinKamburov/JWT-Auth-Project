@@ -28,9 +28,11 @@ public class SecurityConfig {
 
                 // 2) configure URL authorization via a lambda
                 .authorizeHttpRequests(auth -> auth
-                        // public endpoints
+                        // public endpoints:
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        // everything else needs authentication
+                        // private endpoints go here, there is no point in this if you have the code .anyRequest().authenticated() but I am just showing as an example
+                        .requestMatchers("/api/auth/test-controller").authenticated()
+                        // every other endpoint needs authentication
                         .anyRequest().authenticated()
                 )
 
