@@ -43,10 +43,13 @@ export default function AuthPage() {
       const res = await fetch(`${API_BASE}/api/v1/auth/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error(await res.text());
+
+      console.log("Here is the response: ", res);
 
       // both register and login now return { token }
       const { token } = await res.json();
@@ -56,20 +59,6 @@ export default function AuthPage() {
       // it lives on the end‐user’s machine, scoped by your app’s origin (protocol + domain + port).
       // When we do this code below we are simply saving that JWT under the "jwt" key in the browser’s persistent storage area so you can read it on subsequent page loads or API calls
       localStorage.setItem("jwt", token);
-      // 5) **call** your secured endpoint and send the JWT 
-      // const testRes = await fetch(
-      //   `${API_BASE}/api/auth/test-controller`, 
-      //   {
-      //     headers: { 
-      //       "Authorization": `Bearer ${token}` 
-      //     }
-      //   }
-      // );
-      // if (!testRes.ok) {
-      //   throw new Error("Not authorized to hit test‑controller");
-      // }
-      // const text = await testRes.text();
-      // console.log("test‑controller says:", text);
 
       // 6) once it succeeds, route into your React “Test” page
       navigate("/test");
