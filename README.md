@@ -27,7 +27,7 @@ npm install && npm run dev     # UI on http://localhost:5173
 ```
 
 ## .env (must make the file within the frontend/ and backend/ directory)
-Backend:
+Backend .env file:
 ```
 SPRING_DATASOURCE_URL=
 SPRING_DATASOURCE_USERNAME=
@@ -38,7 +38,7 @@ JWT_SECRET_KEY=
 FRONTEND_URL=
 ```
 
-Frontend:
+Frontend .env file:
 ```
 VITE_API_URL=""
 ```
