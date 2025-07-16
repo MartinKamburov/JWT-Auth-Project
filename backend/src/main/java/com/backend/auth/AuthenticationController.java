@@ -38,14 +38,14 @@ public class AuthenticationController {
             HttpServletResponse response
     ) {
         // 1) call your existing service
-        AuthenticationResponse authResp = authService.register(request);
+        AuthenticationResponse authResp = authService.register(request, response);
 
         // 2) pack the JWT into an HttpOnly cookie
         ResponseCookie cookie = ResponseCookie.from("jwt", authResp.getToken())
                 .httpOnly(true)
-                .secure(true)               // in prod, only over HTTPS
+                .secure(false)              //Set this to true in production but for test environments set to false since we are using localhost
                 .path("/")                  // sent on all paths
-                .maxAge(60 * 60)            // match your token’s expiry (in seconds)
+                .maxAge(60 * 60 * 24)            // match your token’s expiry (in seconds)
                 .sameSite("Strict")         // CSRF protection
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -59,18 +59,32 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request,
             HttpServletResponse response
     ) {
-        AuthenticationResponse authResp = authService.authenticate(request);
+        AuthenticationResponse authResp = authService.authenticate(request, response);
 
         ResponseCookie cookie = ResponseCookie.from("jwt", authResp.getToken())
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)              //Set this to true in production but for test environments set to false since we are using localhost
                 .path("/")
-                .maxAge(60 * 60)
+                .maxAge(60 * 60 * 24)
                 .sameSite("Strict")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok(authResp);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        // overwrite the JWT cookie with max‑age=0 so browser deletes it
+        ResponseCookie cookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(false)              //Set this to true in production but for test environments set to false since we are using localhost
+                .path("/")          // same path you used originally
+                .maxAge(0)          // immediately expire
+                .sameSite("Strict")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        return ResponseEntity.noContent().build();
     }
 
 

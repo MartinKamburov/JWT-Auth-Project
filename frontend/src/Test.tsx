@@ -2,16 +2,15 @@ import { useEffect, useState } from "react";
 import { LogoutButton } from "./LogoutButton";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export default function TestPage() {
   const navigate = useNavigate();
   const [message, setMessage] = useState("Loading…");
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt");
     fetch(`${API_BASE}/api/auth/test-controller`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include", // <- this line right here will include the cookies on every request and spring boots filter will extract the token from that cookie for us
     })
       .then(r => {
         if (!r.ok) throw new Error("Not authorized");

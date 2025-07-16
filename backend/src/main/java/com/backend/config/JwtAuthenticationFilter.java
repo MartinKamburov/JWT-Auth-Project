@@ -2,6 +2,7 @@ package com.backend.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -31,15 +32,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
-        if (authHeader == null || !authHeader.startsWith("Bearer ")){
+        String jwt = null;
+        String userEmail;
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")){
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
+//        jwt = authHeader.substring(7);
+
+//        userEmail = jwtService.extractUsername(jwt);
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+        } else if (request.getCookies() != null) {
+            for (Cookie c : request.getCookies()) {
+                if ("jwt".equals(c.getName())) {
+                    jwt = c.getValue();
+                    break;
+                }
+            }
+        }
+
+        // 3) if we still have no token, just continue
+        if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authHeader.substring(7);
 
+        // 4) extract user from token & validate
         userEmail = jwtService.extractUsername(jwt);
+
         // In order to check if the user is already connected or authenticated we use SecurityContextHolder...
         // In this case we are just checking if he is not authenticated yet so that's why we use null
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {

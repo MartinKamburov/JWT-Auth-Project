@@ -11,7 +11,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 
-const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
+const API_BASE = import.meta.env.VITE_API_URL;
 type Mode = "login" | "register";
 
 export default function AuthPage() {
@@ -49,18 +49,7 @@ export default function AuthPage() {
 
       if (!res.ok) throw new Error(await res.text());
 
-      console.log("Here is the response: ", res);
-
-      // both register and login now return { token }
-      const { token } = await res.json();
-      console.log("Here is the token", token);
-
-      // localStorage is part of the browser's Web Storage API - a simple Key/Value store that lives in the user's broswer and persists even after they close the tab or restart the browser
-      // it lives on the end‐user’s machine, scoped by your app’s origin (protocol + domain + port).
-      // When we do this code below we are simply saving that JWT under the "jwt" key in the browser’s persistent storage area so you can read it on subsequent page loads or API calls
-      localStorage.setItem("jwt", token);
-
-      // 6) once it succeeds, route into your React “Test” page
+      // navigate to the protected route /test after the backend has properly verified the Jwt token and Cookie
       navigate("/test");
     } catch (err: any) {
       setError(err.message || "Check your credentials");
