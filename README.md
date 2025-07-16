@@ -4,7 +4,7 @@ A concise full‑stack starter that couples a **Spring Boot 3** API with a **Re
 
 ---
 
-## ⚡️ Tech Stack
+## Tech Stack
 
 | Layer    | Technology                              |
 | -------- | --------------------------------------- |
@@ -14,7 +14,7 @@ A concise full‑stack starter that couples a **Spring Boot 3** API with a **Re
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Backend
@@ -26,11 +26,20 @@ cd frontend
 npm install && npm run dev     # UI on http://localhost:5173
 ```
 
-Default auth endpoints:
+Default backend auth endpoints:
 
 ```
-POST /api/v1/auth/register   # create account
-POST /api/v1/auth/login      # returns JWT
+POST /api/v1/auth/register          # create account
+POST /api/v1/auth/login             # returns JWT
+POST /api/v1/auth/logout            # signs the user out by removing their Jwt token from their cookies
+GET  /api//auth/test-controller     # used to test the protected endpoint which can only be accessed if you sign in
+```
+
+Frontend endpoints:
+
+```
+/ and /login          # login/signup page
+/test                 # protected page which can only be accessed if you signed in
 ```
 
 Send the token in `Authorization: Bearer <jwt>` to call protected routes.
