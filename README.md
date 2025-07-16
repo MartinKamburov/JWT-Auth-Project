@@ -26,6 +26,26 @@ cd frontend
 npm install && npm run dev     # UI on http://localhost:5173
 ```
 
+## .env files in frontend and backend (must make the file within the frontend/ and backend/ directory)
+```
+Backend:
+```
+SPRING_DATASOURCE_URL=
+SPRING_DATASOURCE_USERNAME=
+SPRING_DATASOURCE_PASSWORD=
+
+JWT_SECRET_KEY=
+
+FRONTEND_URL=
+```
+
+Frontend:
+```
+VITE_API_URL=""
+```
+
+```
+
 Default backend auth endpoints:
 
 ```
@@ -38,7 +58,8 @@ GET  /api//auth/test-controller     # used to test the protected endpoint which 
 Frontend endpoints:
 
 ```
-/ and /login          # login/signup page
+/                     # login/signup page
+/login                # login/signup page
 /test                 # protected page which can only be accessed if you signed in
 ```
 
